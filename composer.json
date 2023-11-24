@@ -1,5 +1,7 @@
 {
     "name": "openmage-strict/module-admin",
     "type": "magento-module",
-    "require": {}
+    "require": {
+        "openmage-strict/module-core": "*"
+    }
 }
