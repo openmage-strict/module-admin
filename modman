@@ -1,4 +1,3 @@
-src/app/code/core/Mage/Admin/ 					app/code/core/Mage/Admin/
+src/app/code/core/Mage/Admin/ 					            app/code/core/Mage/Admin/
 src/app/design/adminhtml/default/default/layout/admin.xml 	app/design/adminhtml/default/default/layout/admin.xml
-src/app/etc/modules/Mage_Admin.xml 				app/etc/modules/Mage_Admin.xml
-
+src/app/etc/modules/Mage_Admin.xml 				            app/etc/modules/Mage_Admin.xml
