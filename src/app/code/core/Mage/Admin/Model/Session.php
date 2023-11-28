@@ -239,6 +239,9 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
                         return $acl->isAllowed($user->getAclRole(), null, $privilege);
                     }
                 } catch (Exception $e) {
+                    if (Mage::getIsDeveloperMode()) {
+                        Mage::logException($e);
+                    }
                 }
             }
         }
@@ -313,6 +316,9 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
                 'exception' => $e
             ]);
         } catch (Exception $e) {
+            if (Mage::getIsDeveloperMode()) {
+                Mage::logException($e);
+            }
         }
 
         if ($request && !$request->getParam('messageSent')) {
