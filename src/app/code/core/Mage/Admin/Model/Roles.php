@@ -121,6 +121,9 @@ class Mage_Admin_Model_Roles extends Mage_Core_Model_Abstract
      * @param  bool $rawNodes
      * @param  string $module
      * @return Varien_Simplexml_Element|false|array
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _buildResourcesArray(
         Varien_Simplexml_Element $resource = null,
