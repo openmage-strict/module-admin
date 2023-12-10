@@ -28,6 +28,7 @@ class Mage_Admin_Model_Observer
      *
      * @param Varien_Event_Observer $observer
      *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function actionPreDispatchAdmin($observer)

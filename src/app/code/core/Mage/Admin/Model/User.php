@@ -67,6 +67,9 @@
  * @method string getRpTokenCreatedAt()
  * @method $this setRpTokenCreatedAt(string $value)
  * @method $this setUserId(int $value)
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class Mage_Admin_Model_User extends Mage_Core_Model_Abstract
 {
@@ -133,6 +136,8 @@ class Mage_Admin_Model_User extends Mage_Core_Model_Abstract
 
     /**
      * @inheritDoc
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _beforeSave()
     {
@@ -435,10 +440,10 @@ class Mage_Admin_Model_User extends Mage_Core_Model_Abstract
      */
     public function reload()
     {
-        $id = $this->getId();
+        $userId = $this->getId();
         $oldPassword = $this->getPassword();
         $this->setId(null);
-        $this->load($id);
+        $this->load($userId);
         $isUserPasswordChanged = $this->getSession()->getUserPasswordChanged();
         if (!$isUserPasswordChanged && $this->getPassword() !== $oldPassword) {
             $this->setId(null);
@@ -568,6 +573,9 @@ class Mage_Admin_Model_User extends Mage_Core_Model_Abstract
      *
      * @return array|true
      * @throws Zend_Validate_Exception
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function validate()
     {
@@ -720,8 +728,10 @@ class Mage_Admin_Model_User extends Mage_Core_Model_Abstract
     /**
      * Simple sql format date
      *
-     * @param string|bool $dayOnly
+     * @param bool $dayOnly
      * @return string
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     protected function _getDateNow($dayOnly = false)
     {
