@@ -271,7 +271,7 @@ class Mage_Admin_Model_User extends Mage_Core_Model_Abstract
     public function roleUserExists()
     {
         $result = $this->_getResource()->roleUserExists($this);
-        return is_array($result) && count($result) > 0;
+        return is_array($result) && $result !== [];
     }
 
     /**
@@ -293,7 +293,7 @@ class Mage_Admin_Model_User extends Mage_Core_Model_Abstract
     public function userExists()
     {
         $result = $this->_getResource()->userExists($this);
-        return is_array($result) && count($result) > 0;
+        return is_array($result) && $result !== [];
     }
 
     /**
@@ -328,6 +328,7 @@ class Mage_Admin_Model_User extends Mage_Core_Model_Abstract
         $mailer = Mage::getModel('core/email_template_mailer');
         $emailInfo = Mage::getModel('core/email_info');
         $emailInfo->addTo($this->getEmail(), $this->getName());
+
         $mailer->addEmailInfo($emailInfo);
 
         // Set all required params and send emails
@@ -771,6 +772,7 @@ class Mage_Admin_Model_User extends Mage_Core_Model_Abstract
         $mailer    = Mage::getModel('core/email_template_mailer');
         $emailInfo = Mage::getModel('core/email_info');
         $emailInfo->addTo(array_filter($emails), $generalContactName);
+
         $mailer->addEmailInfo($emailInfo);
 
         // Set all required params and send emails

@@ -62,8 +62,9 @@ class Mage_Admin_Model_Resource_Block extends Mage_Core_Model_Resource_Db_Abstra
         /** @var Mage_Admin_Model_Resource_Block_Collection $collection */
         $collection = Mage::getResourceModel('admin/block_collection');
         $collection->addFieldToFilter('is_allowed', ['eq' => 1]);
+
         $disallowedBlockNames = $this->getDisallowedBlockNames();
-        if (is_array($disallowedBlockNames) && count($disallowedBlockNames) > 0) {
+        if (is_array($disallowedBlockNames) && $disallowedBlockNames !== []) {
             $collection->addFieldToFilter('block_name', ['nin' => $disallowedBlockNames]);
         }
 
