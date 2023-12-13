@@ -96,6 +96,7 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
                     } else {
                         $acl->addRoleParent($roleId, $parent);
                     }
+
                     break;
             }
         }
@@ -115,18 +116,20 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
         foreach ($rulesArr as $rule) {
             $role = $rule['role_type'] . $rule['role_id'];
             $resource = $rule['resource_id'];
-            $privileges = !empty($rule['privileges']) ? explode(',', $rule['privileges']) : null;
+            $privileges = empty($rule['privileges']) ? null : explode(',', $rule['privileges']);
 
             $assert = null;
             if ($rule['assert_id'] != 0) {
                 $assertClass = Mage::getSingleton('admin/config')->getAclAssert($rule['assert_type'])->getClassName();
                 $assert = new $assertClass(unserialize($rule['assert_data'], ['allowed_classes' => false]));
             }
+
             try {
                 if ($rule['permission'] == 'allow') {
                     if ($resource === self::ACL_ALL_RULES) {
                         $acl->allow($role, null, $privileges, $assert);
                     }
+
                     $acl->allow($role, $resource, $privileges, $assert);
                 } elseif ($rule['permission'] == 'deny') {
                     $acl->deny($role, $resource, $privileges, $assert);
@@ -137,6 +140,7 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
                 }
             }
         }
+
         return $this;
     }
 }
