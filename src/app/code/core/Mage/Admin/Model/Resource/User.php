@@ -135,6 +135,7 @@ class Mage_Admin_Model_Resource_User extends Mage_Core_Model_Resource_Db_Abstrac
         if ($user->isObjectNew()) {
             $user->setCreated($this->formatDate(true));
         }
+
         $user->setModified($this->formatDate(true));
 
         return parent::_beforeSave($user);
@@ -188,6 +189,7 @@ class Mage_Admin_Model_Resource_User extends Mage_Core_Model_Resource_Db_Abstrac
             $adapter->rollBack();
             throw $e;
         }
+
         $this->_afterDelete($user);
         return $this;
     }
@@ -216,11 +218,7 @@ class Mage_Admin_Model_Resource_User extends Mage_Core_Model_Resource_Db_Abstrac
             $adapter->delete($this->getTable('admin/role'), $conditions);
             foreach ($rolesIds as $rid) {
                 $rid = (int) $rid;
-                if ($rid > 0) {
-                    $role = Mage::getModel('admin/role')->load($rid);
-                } else {
-                    $role = new Varien_Object(['tree_level' => 0]);
-                }
+                $role = $rid > 0 ? Mage::getModel('admin/role')->load($rid) : new Varien_Object(['tree_level' => 0]);
 
                 $data = new Varien_Object([
                     'parent_id'  => $rid,
@@ -239,11 +237,9 @@ class Mage_Admin_Model_Resource_User extends Mage_Core_Model_Resource_Db_Abstrac
                 // reload acl on next user http request
                 $this->saveReloadAclFlag($user, 1);
             }
+
             $adapter->commit();
-        } catch (Mage_Core_Exception $e) {
-            $adapter->rollBack();
-            throw $e;
-        } catch (Exception $e) {
+        } catch (Mage_Core_Exception|Exception $e) {
             $adapter->rollBack();
             throw $e;
         }
@@ -343,6 +339,7 @@ class Mage_Admin_Model_Resource_User extends Mage_Core_Model_Resource_Db_Abstrac
         if ($user->getUserId() <= 0) {
             return $this;
         }
+
         if ($user->getRoleId() <= 0) {
             return $this;
         }
@@ -471,6 +468,7 @@ class Mage_Admin_Model_Resource_User extends Mage_Core_Model_Resource_Db_Abstrac
         } catch (Exception $e) {
             $user->setExtra(false);
         }
+
         return $user;
     }
 }

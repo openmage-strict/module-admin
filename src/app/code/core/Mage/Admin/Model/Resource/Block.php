@@ -50,6 +50,7 @@ class Mage_Admin_Model_Resource_Block extends Mage_Core_Model_Resource_Db_Abstra
             $this->_generateCache();
             $data = Mage::app()->getCacheInstance()->load(self::CACHE_ID);
         }
+
         return Mage::helper('core')->jsonDecode($data);
     }
 
@@ -65,6 +66,7 @@ class Mage_Admin_Model_Resource_Block extends Mage_Core_Model_Resource_Db_Abstra
         if (is_array($disallowedBlockNames) && count($disallowedBlockNames) > 0) {
             $collection->addFieldToFilter('block_name', ['nin' => $disallowedBlockNames]);
         }
+
         $data = $collection->getColumnValues('block_name');
         $data = array_flip($data);
         Mage::app()->saveCache(

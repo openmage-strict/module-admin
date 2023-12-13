@@ -81,14 +81,14 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
      */
     public function __construct($parameters = [])
     {
-        $this->_urlPolicy = (!empty($parameters['redirectPolicy'])) ?
-            $parameters['redirectPolicy'] : Mage::getModel('admin/redirectpolicy');
+        $this->_urlPolicy = (empty($parameters['redirectPolicy'])) ?
+            Mage::getModel('admin/redirectpolicy') : $parameters['redirectPolicy'];
 
-        $this->_response = (!empty($parameters['response'])) ?
-            $parameters['response'] : new Mage_Core_Controller_Response_Http();
+        $this->_response = (empty($parameters['response'])) ?
+            new Mage_Core_Controller_Response_Http() : $parameters['response'];
 
-        $this->_factory = (!empty($parameters['factory'])) ?
-            $parameters['factory'] : Mage::getModel('core/factory');
+        $this->_factory = (empty($parameters['factory'])) ?
+            Mage::getModel('core/factory') : $parameters['factory'];
 
         $this->init('admin');
         $this->logoutIndirect();
@@ -157,6 +157,7 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
                 if (Mage::getSingleton('adminhtml/url')->useSecretKey()) {
                     Mage::getSingleton('adminhtml/url')->renewSecretUrls();
                 }
+
                 $this->setIsFirstPageAfterLogin(true);
                 $this->setUser($user);
                 $this->setAcl(Mage::getResourceModel('admin/acl')->loadAcl());
@@ -199,15 +200,19 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
         if (is_null($user)) {
             $user = $this->getUser();
         }
+
         if (!$user) {
             return $this;
         }
+
         if (!$this->getAcl() || $user->getReloadAclFlag()) {
             $this->setAcl(Mage::getResourceModel('admin/acl')->loadAcl());
         }
+
         if ($user->getReloadAclFlag()) {
             $user->getResource()->saveReloadAclFlag($user, 0);
         }
+
         return $this;
     }
 
@@ -245,6 +250,7 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
                 }
             }
         }
+
         return false;
     }
 
@@ -268,6 +274,7 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
         if (is_null($this->_isFirstPageAfterLogin)) {
             $this->_isFirstPageAfterLogin = $this->getData('is_first_visit', true);
         }
+
         return $this->_isFirstPageAfterLogin;
     }
 

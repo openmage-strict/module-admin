@@ -44,20 +44,20 @@ class Mage_Admin_Model_Acl_Role_Registry extends Zend_Acl_Role_Registry
         if (!is_array($parents)) {
             $parents = [$parents];
         }
+
         foreach ($parents as $parent) {
             try {
-                if ($parent instanceof Zend_Acl_Role_Interface) {
-                    $roleParentId = $parent->getRoleId();
-                } else {
-                    $roleParentId = $parent;
-                }
+                $roleParentId = $parent instanceof Zend_Acl_Role_Interface ? $parent->getRoleId() : $parent;
+
                 $roleParent = $this->get($roleParentId);
             } catch (Zend_Acl_Role_Registry_Exception $e) {
                 throw new Zend_Acl_Role_Registry_Exception("Parent Role id '$roleParentId' does not exist");
             }
+
             $this->_roles[$roleId]['parents'][$roleParentId] = $roleParent;
             $this->_roles[$roleParentId]['children'][$roleId] = $role;
         }
+
         return $this;
     }
 }
