@@ -33,7 +33,6 @@ class Mage_Admin_Model_Observer
      */
     public function actionPreDispatchAdmin($observer)
     {
-        /** @var Mage_Admin_Model_Session $session */
         $session = Mage::getSingleton('admin/session');
 
         $request = Mage::app()->getRequest();
@@ -56,10 +55,9 @@ class Mage_Admin_Model_Observer
 
             if (!$user || !$user->getId()) {
                 if ($request->getPost('login')) {
-                    /** @var Mage_Core_Model_Session $coreSession */
                     $coreSession = Mage::getSingleton('core/session');
 
-                    if ($coreSession->validateFormKey($request->getPost("form_key"))) {
+                    if ($coreSession->validateFormKey($request->getPost('form_key'))) {
                         $postLogin = $request->getPost('login');
                         $username = $postLogin['username'] ?? '';
                         $password = $postLogin['password'] ?? '';

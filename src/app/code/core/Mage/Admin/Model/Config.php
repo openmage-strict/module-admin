@@ -102,7 +102,7 @@ class Mage_Admin_Model_Config extends Varien_Simplexml_Config
         }
 
         foreach ($children as $res) {
-            if ($res->disabled == 1) {
+            if ((string)$res->disabled === '1') {
                 continue;
             }
 
@@ -120,7 +120,7 @@ class Mage_Admin_Model_Config extends Varien_Simplexml_Config
      */
     public function getAclAssert($name = '')
     {
-        $asserts = $this->getNode("admin/acl/asserts");
+        $asserts = $this->getNode('admin/acl/asserts');
         if ($name === '') {
             return $asserts;
         }
@@ -136,7 +136,7 @@ class Mage_Admin_Model_Config extends Varien_Simplexml_Config
      */
     public function getAclPrivilegeSet($name = '')
     {
-        $sets = $this->getNode("admin/acl/privilegeSets");
+        $sets = $this->getNode('admin/acl/privilegeSets');
         if ($name === '') {
             return $sets;
         }
