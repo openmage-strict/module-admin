@@ -46,7 +46,7 @@ class Mage_Admin_Model_Resource_Roles extends Mage_Core_Model_Resource_Db_Abstra
     /**
      * Process role before saving
      *
-     * @param Mage_Core_Model_Abstract|Mage_Admin_Model_Roles $role
+     * @param Mage_Admin_Model_Roles $role
      * @return $this
      */
     protected function _beforeSave(Mage_Core_Model_Abstract $role)
@@ -65,10 +65,10 @@ class Mage_Admin_Model_Resource_Roles extends Mage_Core_Model_Resource_Db_Abstra
                 ->where("{$this->getIdFieldName()} = :pid");
 
             $binds = [
-                'pid' => (int) $role->getPid(),
+                'pid' => (int)$role->getPid(),
             ];
 
-            $treeLevel = $this->_getReadAdapter()->fetchOne($select, $binds);
+            $treeLevel = (int)$this->_getReadAdapter()->fetchOne($select, $binds);
         } else {
             $treeLevel = 0;
         }
@@ -82,7 +82,7 @@ class Mage_Admin_Model_Resource_Roles extends Mage_Core_Model_Resource_Db_Abstra
     /**
      * Process role after saving
      *
-     * @param Mage_Core_Model_Abstract $role
+     * @param Mage_Admin_Model_Roles $role
      * @return $this
      */
     protected function _afterSave(Mage_Core_Model_Abstract $role)
@@ -98,7 +98,7 @@ class Mage_Admin_Model_Resource_Roles extends Mage_Core_Model_Resource_Db_Abstra
     /**
      * Process role after deleting
      *
-     * @param Mage_Core_Model_Abstract $role
+     * @param Mage_Admin_Model_Roles $role
      * @return $this
      */
     protected function _afterDelete(Mage_Core_Model_Abstract $role)

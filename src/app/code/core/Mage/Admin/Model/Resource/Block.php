@@ -51,7 +51,7 @@ class Mage_Admin_Model_Resource_Block extends Mage_Core_Model_Resource_Db_Abstra
             $data = Mage::app()->getCacheInstance()->load(self::CACHE_ID);
         }
 
-        return Mage::helper('core')->jsonDecode($data);
+        return Mage::helper('core')->jsonDecode((string)$data);
     }
 
     /**

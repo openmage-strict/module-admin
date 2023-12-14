@@ -53,7 +53,7 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
             ->from($roleTable)
             ->order('tree_level');
 
-        $rolesArr = $adapter->fetchAll($select);
+        $rolesArr = (array)$adapter->fetchAll($select);
 
         $this->loadRoles($acl, $rolesArr);
 
@@ -65,7 +65,7 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
                 ['assert_type', 'assert_data']
             );
 
-        $rulesArr = $adapter->fetchAll($select);
+        $rulesArr = (array)$adapter->fetchAll($select);
 
         $this->loadRules($acl, $rulesArr);
 
@@ -93,7 +93,7 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
                     $roleId = $role['role_type'] . $role['user_id'];
                     if (!$acl->hasRole($roleId)) {
                         $acl->addRole(Mage::getModel('admin/acl_role_user', $roleId), $parent);
-                    } else {
+                    } elseif ($parent !== null) {
                         $acl->addRoleParent($roleId, $parent);
                     }
 
@@ -120,8 +120,11 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
 
             $assert = null;
             if ($rule['assert_id'] != 0) {
-                $assertClass = Mage::getSingleton('admin/config')->getAclAssert($rule['assert_type'])->getClassName();
-                $assert = new $assertClass(unserialize($rule['assert_data'], ['allowed_classes' => false]));
+                $assertType = Mage::getSingleton('admin/config')->getAclAssert($rule['assert_type']);
+                if ($assertType instanceof Mage_Core_Model_Config_Element) {
+                    $assertClass = $assertType->getClassName();
+                    $assert = new $assertClass(unserialize($rule['assert_data'], ['allowed_classes' => false]));
+                }
             }
 
             try {
