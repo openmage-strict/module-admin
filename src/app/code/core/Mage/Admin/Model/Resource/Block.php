@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenMage
  *
@@ -9,7 +10,7 @@
  * @category   Mage
  * @package    Mage_Admin
  * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2023 The OpenMage Contributors (https://www.openmage.org)
+ * @copyright  Copyright (c) 2020-2024 The OpenMage Contributors (https://www.openmage.org)
  * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -50,8 +51,7 @@ class Mage_Admin_Model_Resource_Block extends Mage_Core_Model_Resource_Db_Abstra
             $this->_generateCache();
             $data = Mage::app()->getCacheInstance()->load(self::CACHE_ID);
         }
-
-        return Mage::helper('core')->jsonDecode((string)$data);
+        return Mage::helper('core')->jsonDecode($data);
     }
 
     /**
@@ -62,18 +62,16 @@ class Mage_Admin_Model_Resource_Block extends Mage_Core_Model_Resource_Db_Abstra
         /** @var Mage_Admin_Model_Resource_Block_Collection $collection */
         $collection = Mage::getResourceModel('admin/block_collection');
         $collection->addFieldToFilter('is_allowed', ['eq' => 1]);
-
         $disallowedBlockNames = $this->getDisallowedBlockNames();
-        if (is_array($disallowedBlockNames) && $disallowedBlockNames !== []) {
+        if (is_array($disallowedBlockNames) && count($disallowedBlockNames) > 0) {
             $collection->addFieldToFilter('block_name', ['nin' => $disallowedBlockNames]);
         }
-
         $data = $collection->getColumnValues('block_name');
         $data = array_flip($data);
         Mage::app()->saveCache(
             Mage::helper('core')->jsonEncode($data),
             self::CACHE_ID,
-            [Mage_Core_Model_Resource_Db_Collection_Abstract::CACHE_TAG]
+            [Mage_Core_Model_Resource_Db_Collection_Abstract::CACHE_TAG],
         );
     }
 

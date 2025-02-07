@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenMage
  *
@@ -9,7 +10,7 @@
  * @category   Mage
  * @package    Mage_Admin
  * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2018-2023 The OpenMage Contributors (https://www.openmage.org)
+ * @copyright  Copyright (c) 2018-2024 The OpenMage Contributors (https://www.openmage.org)
  * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -54,7 +55,7 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
     public const XML_PATH_ALLOW_SID_FOR_ADMIN_AREA = 'web/session/use_admin_sid';
 
     /**
-     * Whether it is the first page after successfull login
+     * Whether it is the first page after successful login
      *
      * @var bool|null
      */
@@ -81,14 +82,14 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
      */
     public function __construct($parameters = [])
     {
-        $this->_urlPolicy = (empty($parameters['redirectPolicy'])) ?
-            Mage::getModel('admin/redirectpolicy') : $parameters['redirectPolicy'];
+        $this->_urlPolicy = (!empty($parameters['redirectPolicy'])) ?
+            $parameters['redirectPolicy'] : Mage::getModel('admin/redirectpolicy');
 
-        $this->_response = (empty($parameters['response'])) ?
-            new Mage_Core_Controller_Response_Http() : $parameters['response'];
+        $this->_response = (!empty($parameters['response'])) ?
+            $parameters['response'] : new Mage_Core_Controller_Response_Http();
 
-        $this->_factory = (empty($parameters['factory'])) ?
-            Mage::getModel('core/factory') : $parameters['factory'];
+        $this->_factory = (!empty($parameters['factory'])) ?
+            $parameters['factory'] : Mage::getModel('core/factory');
 
         $this->init('admin');
         $this->logoutIndirect();
@@ -147,6 +148,9 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
             return null;
         }
 
+        $username = new Mage_Core_Model_Security_Obfuscated($username);
+        $password = new Mage_Core_Model_Security_Obfuscated($password);
+
         try {
             /** @var Mage_Admin_Model_User $user */
             $user = $this->_factory->getModel('admin/user');
@@ -157,7 +161,6 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
                 if (Mage::getSingleton('adminhtml/url')->useSecretKey()) {
                     Mage::getSingleton('adminhtml/url')->renewSecretUrls();
                 }
-
                 $this->setIsFirstPageAfterLogin(true);
                 $this->setUser($user);
                 $this->setAcl(Mage::getResourceModel('admin/acl')->loadAcl());
@@ -178,7 +181,7 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
             }
         } catch (Mage_Core_Exception $e) {
             $e->setMessage(
-                Mage::helper('adminhtml')->__('You did not sign in correctly or your account is temporarily disabled.')
+                Mage::helper('adminhtml')->__('You did not sign in correctly or your account is temporarily disabled.'),
             );
             $this->_loginFailed($e, $request, $username, $e->getMessage());
         } catch (Exception $e) {
@@ -200,19 +203,15 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
         if (is_null($user)) {
             $user = $this->getUser();
         }
-
         if (!$user) {
             return $this;
         }
-
         if (!$this->getAcl() || $user->getReloadAclFlag()) {
             $this->setAcl(Mage::getResourceModel('admin/acl')->loadAcl());
         }
-
         if ($user->getReloadAclFlag()) {
             $user->getResource()->saveReloadAclFlag($user, 0);
         }
-
         return $this;
     }
 
@@ -244,13 +243,9 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
                         return $acl->isAllowed($user->getAclRole(), null, $privilege);
                     }
                 } catch (Exception $e) {
-                    if (Mage::getIsDeveloperMode()) {
-                        Mage::logException($e);
-                    }
                 }
             }
         }
-
         return false;
     }
 
@@ -265,7 +260,7 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
     }
 
     /**
-     * Check if it is the first page after successfull login
+     * Check if it is the first page after successful login
      *
      * @return bool
      */
@@ -274,7 +269,6 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
         if (is_null($this->_isFirstPageAfterLogin)) {
             $this->_isFirstPageAfterLogin = $this->getData('is_first_visit', true);
         }
-
         return $this->_isFirstPageAfterLogin;
     }
 
@@ -286,7 +280,7 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
      */
     public function setIsFirstPageAfterLogin($value)
     {
-        $this->_isFirstPageAfterLogin = (bool)$value;
+        $this->_isFirstPageAfterLogin = (bool) $value;
         return $this->setIsFirstVisit($this->_isFirstPageAfterLogin);
     }
 
@@ -314,20 +308,15 @@ class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
      * @param string $username
      * @param string $message
      * @param Mage_Core_Controller_Request_Http|null $request
-     *
-     * @SuppressWarnings(PHPMD.ShortVariable)
      */
     protected function _loginFailed($e, $request, $username, $message)
     {
         try {
             Mage::dispatchEvent('admin_session_user_login_failed', [
                 'user_name' => $username,
-                'exception' => $e
+                'exception' => $e,
             ]);
         } catch (Exception $e) {
-            if (Mage::getIsDeveloperMode()) {
-                Mage::logException($e);
-            }
         }
 
         if ($request && !$request->getParam('messageSent')) {

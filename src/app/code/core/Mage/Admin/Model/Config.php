@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenMage
  *
@@ -9,7 +10,7 @@
  * @category   Mage
  * @package    Mage_Admin
  * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2023 The OpenMage Contributors (https://www.openmage.org)
+ * @copyright  Copyright (c) 2019-2024 The OpenMage Contributors (https://www.openmage.org)
  * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -53,7 +54,6 @@ class Mage_Admin_Model_Config extends Varien_Simplexml_Config
             if ($aclConfig) {
                 $adminhtmlConfig->getNode()->extendChild($aclConfig, true);
             }
-
             $menuConfig = Mage::getConfig()->getNode('adminhtml/menu');
             if ($menuConfig) {
                 $adminhtmlConfig->getNode()->extendChild($menuConfig, true);
@@ -63,7 +63,7 @@ class Mage_Admin_Model_Config extends Varien_Simplexml_Config
                 Mage::app()->saveCache(
                     $adminhtmlConfig->getXmlString(),
                     $this->getCacheId(),
-                    [Mage_Core_Model_Config::CACHE_TAG]
+                    [Mage_Core_Model_Config::CACHE_TAG],
                 );
             }
         }
@@ -72,7 +72,6 @@ class Mage_Admin_Model_Config extends Varien_Simplexml_Config
     /**
      * Load Acl resources from config
      *
-     * @param Mage_Admin_Model_Acl $acl
      * @param Mage_Core_Model_Config_Element|Varien_Simplexml_Element $resource
      * @param string $parentName
      * @return $this
@@ -80,7 +79,7 @@ class Mage_Admin_Model_Config extends Varien_Simplexml_Config
     public function loadAclResources(Mage_Admin_Model_Acl $acl, $resource = null, $parentName = null)
     {
         if (is_null($resource)) {
-            $resource = $this->getAdminhtmlConfig()->getNode("acl/resources");
+            $resource = $this->getAdminhtmlConfig()->getNode('acl/resources');
             $resourceName = null;
         } else {
             $resourceName = (is_null($parentName) ? '' : $parentName . '/') . $resource->getName();
@@ -102,13 +101,11 @@ class Mage_Admin_Model_Config extends Varien_Simplexml_Config
         }
 
         foreach ($children as $res) {
-            if ((string)$res->disabled === '1') {
+            if ($res->disabled == 1) {
                 continue;
             }
-
             $this->loadAclResources($acl, $res, $resourceName);
         }
-
         return $this;
     }
 
@@ -165,9 +162,8 @@ class Mage_Admin_Model_Config extends Varien_Simplexml_Config
         $moduleName = 'adminhtml';
         $menuNode = $this->getAdminhtmlConfig()->getNode('menu/' . str_replace('/', '/children/', trim($path, '/')));
         if ($menuNode->getAttribute('module')) {
-            $moduleName = (string)$menuNode->getAttribute('module');
+            $moduleName = (string) $menuNode->getAttribute('module');
         }
-
-        return Mage::helper($moduleName)->__((string)$menuNode->title);
+        return Mage::helper($moduleName)->__((string) $menuNode->title);
     }
 }
