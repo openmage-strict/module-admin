@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenMage
  *
@@ -9,7 +10,7 @@
  * @category   Mage
  * @package    Mage_Admin
  * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2023 The OpenMage Contributors (https://www.openmage.org)
+ * @copyright  Copyright (c) 2020-2024 The OpenMage Contributors (https://www.openmage.org)
  * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -27,12 +28,10 @@ class Mage_Admin_Model_Observer
      * Handler for controller_action_predispatch event
      *
      * @param Varien_Event_Observer $observer
-     *
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function actionPreDispatchAdmin($observer)
     {
+        /** @var Mage_Admin_Model_Session $session */
         $session = Mage::getSingleton('admin/session');
 
         $request = Mage::app()->getRequest();
@@ -44,7 +43,7 @@ class Mage_Admin_Model_Observer
             'resetpassword',
             'resetpasswordpost',
             'logout',
-            'refresh' // captcha refresh
+            'refresh', // captcha refresh
         ];
         if (in_array($requestedActionName, $openActions)) {
             $request->setDispatched(true);
@@ -52,9 +51,9 @@ class Mage_Admin_Model_Observer
             if ($user) {
                 $user->reload();
             }
-
             if (!$user || !$user->getId()) {
                 if ($request->getPost('login')) {
+                    /** @var Mage_Core_Model_Session $coreSession */
                     $coreSession = Mage::getSingleton('core/session');
 
                     if ($coreSession->validateFormKey($request->getPost('form_key'))) {
@@ -63,16 +62,17 @@ class Mage_Admin_Model_Observer
                         $password = $postLogin['password'] ?? '';
                         $session->login($username, $password, $request);
                         $request->setPost('login', null);
-                    } elseif (!$request->getParam('messageSent')) {
-                        Mage::getSingleton('adminhtml/session')->addError(
-                            Mage::helper('adminhtml')->__('Invalid Form Key. Please refresh the page.')
-                        );
-                        $request->setParam('messageSent', true);
+                    } else {
+                        if (!$request->getParam('messageSent')) {
+                            Mage::getSingleton('adminhtml/session')->addError(
+                                Mage::helper('adminhtml')->__('Invalid Form Key. Please refresh the page.'),
+                            );
+                            $request->setParam('messageSent', true);
+                        }
                     }
 
                     $coreSession->renewFormKey();
                 }
-
                 if (!$request->getInternallyForwarded()) {
                     $request->setInternallyForwarded();
                     if ($request->getParam('isIframe')) {
@@ -92,7 +92,6 @@ class Mage_Admin_Model_Observer
                             ->setActionName('login')
                             ->setDispatched(false);
                     }
-
                     return;
                 }
             }
@@ -106,12 +105,8 @@ class Mage_Admin_Model_Observer
      *
      * @deprecated after 1.4.0.1, logic moved to admin session
      * @param Varien_Event_Observer $event
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function actionPostDispatchAdmin($event)
-    {
-    }
+    public function actionPostDispatchAdmin($event) {}
 
     /**
      * Validate admin password and upgrade hash version
@@ -132,7 +127,7 @@ class Mage_Admin_Model_Observer
             && !Mage::helper('core')->getEncryptor()->validateHashByVersion(
                 $password,
                 $user->getPassword(),
-                Mage_Core_Model_Encryption::HASH_VERSION_SHA256
+                Mage_Core_Model_Encryption::HASH_VERSION_SHA256,
             )
         ) {
             $user
