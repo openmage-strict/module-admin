@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenMage
  *
@@ -10,7 +9,7 @@
  * @category   Mage
  * @package    Mage_Admin
  * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2024 The OpenMage Contributors (https://www.openmage.org)
+ * @copyright  Copyright (c) 2019-2023 The OpenMage Contributors (https://www.openmage.org)
  * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -30,6 +29,7 @@ class Mage_Admin_Model_Resource_Role extends Mage_Core_Model_Resource_Db_Abstrac
     /**
      * Process role before saving
      *
+     * @param Mage_Core_Model_Abstract|Mage_Admin_Model_Role $object
      * @return $this
      */
     protected function _beforeSave(Mage_Core_Model_Abstract $object)
@@ -37,6 +37,7 @@ class Mage_Admin_Model_Resource_Role extends Mage_Core_Model_Resource_Db_Abstrac
         if (!$object->getId()) {
             $object->setCreated($this->formatDate(true));
         }
+
         $object->setModified($this->formatDate(true));
         return $this;
     }

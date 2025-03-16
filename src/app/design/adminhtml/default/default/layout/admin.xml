@@ -86,8 +86,8 @@
     </adminhtml_dashboard_index>
     <adminhtml_cache_index>
         <reference name="content">
-            <block type="adminhtml/cache" name="cache"></block>
-            <block type="adminhtml/cache_additional" name="cache.additional" template="system/cache/additional.phtml"></block>
+            <block type="adminhtml/cache" name="cache"/>
+            <block type="adminhtml/cache_additional" name="cache.additional" template="system/cache/additional.phtml"/>
         </reference>
     </adminhtml_cache_index>
 
